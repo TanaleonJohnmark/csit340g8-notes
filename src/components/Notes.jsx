@@ -15,6 +15,9 @@ function Notes() {
     setNotes([...notes, { id: Date.now(), title: title, body: body }]);
     setForm({ title: "", body: "" });
   }
+    function handleDelete(id) {
+    setNotes(notes.filter((note) => note.id !== id));
+  }
   const [notes, setNotes] = useState([
     {
       id: 1,
@@ -83,6 +86,7 @@ function Notes() {
               <NoteCard title={note.title} body={note.body} />
               <button
                 type="button"
+                onClick={() => handleDelete(note.id)}
                 className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
               >
                 ×
