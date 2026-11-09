@@ -90,10 +90,11 @@ function Notes() {
                 className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
               >
                 ×
-              </button>{" "}
+              </button>
             </li>
           ))}
         </ul>
+        {notes.length === 0 && <p className="text-lg text-[#949494]">No notes found</p>}
       </section>
     </div>
   );
