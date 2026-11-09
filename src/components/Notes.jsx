@@ -7,6 +7,14 @@ function Notes() {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }
+    function handleSubmit(e) {
+    e.preventDefault();
+    const title = form.title.trim();
+    const body = form.body.trim();
+    if (title === "" || body === "") return;
+    setNotes([...notes, { id: Date.now(), title: title, body: body }]);
+    setForm({ title: "", body: "" });
+  }
   const [notes, setNotes] = useState([
     {
       id: 1,
@@ -36,7 +44,7 @@ function Notes() {
           />
         </div>
 
-        <form className="grid gap-3">
+        <form onSubmit={handleSubmit} className="grid gap-3">
           <p className="text-[13px] font-normal tracking-wide text-[#949494]">
             NEW NOTE
           </p>
