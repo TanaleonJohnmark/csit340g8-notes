@@ -1,25 +1,7 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoteCard from "./NoteCard.jsx";
 
 function Notes() {
-  const [form, setForm] = useState({ title: "", body: "" });
-    const [search, setSearch] = useState("");
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  }
-    function handleSubmit(e) {
-    e.preventDefault();
-    const title = form.title.trim();
-    const body = form.body.trim();
-    if (title === "" || body === "") return;
-    setNotes([...notes, { id: Date.now(), title: title, body: body }]);
-    setForm({ title: "", body: "" });
-  }
-    function handleDelete(id) {
-    setNotes(notes.filter((note) => note.id !== id));
-  }
   const [notes, setNotes] = useState([
     {
       id: 1,
@@ -32,9 +14,36 @@ function Notes() {
       body: "Practice writing one handler for many inputs.",
     },
   ]);
-      const shown = notes.filter((note) =>
+  const [form, setForm] = useState({ title: "", body: "" });
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const title = form.title.trim();
+    const body = form.body.trim();
+    if (title === "" || body === "") return;
+    const nextId = Math.max(0, ...notes.map((note) => note.id)) + 1;
+    setNotes([...notes, { id: nextId, title: title, body: body }]);
+    setForm({ title: "", body: "" });
+  }
+
+  function handleDelete(id) {
+    setNotes(notes.filter((note) => note.id !== id));
+  }
+
+  const shown = notes.filter((note) =>
     note.title.toLowerCase().includes(search.toLowerCase())
   );
+
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
       <aside className="sticky top-0 flex h-screen flex-col gap-5 bg-white px-8 py-9 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]">
@@ -43,7 +52,7 @@ function Notes() {
         </h1>
 
         <div>
-        <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">
+          <p className="mb-2 text-[13px] font-normal tracking-wide text-[#949494]">
             SEARCH
           </p>
           <input
@@ -96,12 +105,14 @@ function Notes() {
                 onClick={() => handleDelete(note.id)}
                 className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
               >
-                × 
+                ×
               </button>
             </li>
           ))}
         </ul>
-        {shown.length === 0 && <p className="text-lg text-[#949494]">No notes found</p>}
+        {shown.length === 0 && (
+          <p className="text-lg text-[#949494]">No notes found</p>
+        )}
       </section>
     </div>
   );
